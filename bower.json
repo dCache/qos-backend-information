@@ -1,0 +1,16 @@
+{
+  "name": "qos-backend-information",
+  "description": "Get QoS backend information for both file and directory.",
+  "main": "qos-backend-information.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.4.0",
+    "util-precondition": "femiadeyemi/util-precondition#^0.0.2",
+    "util-majax-requests": "femiadeyemi/util-majax-requests#^0.0.1"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+    "web-component-tester": "^4.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  }
+}

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>single-callback-majax demo</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../qos-backend-information.html">
+
+    <style is="custom-style" include="demo-pages-shared-styles">
+    </style>
+  </head>
+  <body>
+    <div class="vertical-section-container centered">
+      <h3>Basic single-callback-majax demo</h3>
+      <demo-snippet>
+        <template>
+          <h1>HERE</h1>
+          <button onclick="list()">List</button>
+          <script>
+            let qos = document.createElement('qos-backend-information');
+            function list() {
+              qos.getSiteBackendCapabilities();
+
+              setTimeout(() => {console.log(qos.response)},2000)
+            }
+            console.log(qos.response);
+            
+            
+          </script>
+        </template>
+      </demo-snippet>
+    </div>
+  </body>
+</html>
