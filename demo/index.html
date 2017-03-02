@@ -25,6 +25,8 @@
           <script>
             let qos = document.createElement('qos-backend-information');
             function list() {
+              qos.urls = ["http://localhost:3880/api/v1/qos-management/qos/file/disk+tape",
+                "http://localhost:3880/api/v1/qos-management/qos/directory/+tape"];
               qos.getSiteBackendCapabilities();
 
               setTimeout(() => {console.log(qos.response)},2000)
