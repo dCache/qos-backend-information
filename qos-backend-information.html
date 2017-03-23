@@ -6,52 +6,82 @@
 <!--
 `qos-backend-information`
 
-@demo demo/index.html 
+@demo demo/index.html
 -->
 
 <script>
-  'use strict';
-  Polymer({
-    is: 'qos-backend-information',
-    hostAttributes: {
-      hidden: true
-    },
-    properties: {
-      urls: {
-        type: Array,
-        value: [],
-        notify: true
-      },
-      auth: {
-        type: String,
-        value: function() {
-          return sessionStorage.upauth==undefined ? 
-            'bm9ib2R5Om5vcGFzc3dvcmQ=': sessionStorage.upauth;
+    'use strict';
+    let QosBackendInformation = Polymer({
+        is: 'qos-backend-information',
+        hostAttributes: {
+            hidden: true
         },
-        notify: true
-      },
-      response: {
-        type: Array,
-        value: [],
-        notify: true
-      }
-    },
+        properties: {
+            urls: {
+                type: Array,
+                notify: true
+            },
+            auth: {
+                type: String,
+                value: function() {
+                    return sessionStorage.upauth==undefined ?
+                        'bm9ib2R5Om5vcGFzc3dvcmQ=': sessionStorage.upauth;
+                },
+                notify: true
+            }
+        },
 
-    getSiteBackendCapabilities: function()
-    {
-      try {
-        precondition.checkArgument(this.urls != undefined || this.urls != null, 
-          'Property \'urls\' cannot be unspecified.');
-        precondition.checkArgument(this.urls.length != 0, 
-          'Cannot set property \'urls\' to empty array.');
-        let requestQosInfo = new MultipleAjaxRequests(this.urls, this.auth, this);
-        this.addEventListener('allResolved', e => {
-          this.response = e.detail;
-        });
-        requestQosInfo.send();
-      } catch (e) {
-        throw new Error(e.message);
-      }
-    }
-  });
+        factoryImpl: function(apiEndPoint)
+        {
+            this._requestFileQosPossibilities(apiEndPoint);
+        },
+
+        getSiteBackendCapabilities: function()
+        {
+            try {
+                precondition.checkArgument(this.urls != undefined || this.urls != null,
+                    'Property \'urls\' cannot be unspecified.');
+                precondition.checkArgument(this.urls.length != 0,
+                    'Cannot set property \'urls\' to empty array.');
+                let requestQosInfo = new MultipleAjaxRequests(this.urls, this.auth, this);
+                this.addEventListener('allResolved', e => {
+                    /**
+                     * @event {qos-backend-response}
+                     */
+                    this.fire('qos-backend-response', {response: e.detail});
+                });
+                requestQosInfo.send();
+            } catch (e) {
+                throw new Error(e.message);
+            }
+        },
+
+        _requestFileQosPossibilities: function(apiEndPoint)
+        {
+            const url = apiEndPoint + "qos-management/qos/file";
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', url);
+            xhr.onload = ()=> {
+                if (xhr.status >= 200 || xhr.status < 500) {
+                    this.urls = [];
+                    const x = JSON.parse(xhr.responseText);
+                    const response = x.name;
+                    for (let i = 0; i < response.length ; i++) {
+                        this.urls.push(apiEndPoint + "qos-management/qos/file/" + response[i]);
+                    }
+                    this.getSiteBackendCapabilities();
+                } else {
+                    new Error("Server Side Error");
+                }
+            };
+            xhr.onerror = function() {
+                new Error("Network Error");
+            };
+
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.setRequestHeader("Authorization", this.auth);
+            xhr.setRequestHeader("Accept", "application/json");
+            xhr.send();
+        },
+    });
 </script>
