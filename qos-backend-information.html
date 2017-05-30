@@ -23,10 +23,6 @@
             },
             auth: {
                 type: String,
-                value: function() {
-                    return sessionStorage.upauth==undefined ?
-                        'bm9ib2R5Om5vcGFzc3dvcmQ=': sessionStorage.upauth;
-                },
                 notify: true
             },
 
@@ -43,6 +39,7 @@
 
         factoryImpl: function(apiEndPoint, auth)
         {
+            this.auth = auth===undefined? 'Basic bm9ib2R5Om5vcGFzc3dvcmQ=':auth;
             this._requestQosPossibilities(apiEndPoint);
         },
 
