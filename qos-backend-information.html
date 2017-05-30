@@ -28,12 +28,22 @@
                         'bm9ib2R5Om5vcGFzc3dvcmQ=': sessionStorage.upauth;
                 },
                 notify: true
-            }
+            },
+
+            /**
+             * value: file or directory
+             * default to file
+             */
+            fileType: {
+                type: Array,
+                value: 'file',
+                notify: true
+            },
         },
 
-        factoryImpl: function(apiEndPoint)
+        factoryImpl: function(apiEndPoint, auth)
         {
-            this._requestFileQosPossibilities(apiEndPoint);
+            this._requestQosPossibilities(apiEndPoint);
         },
 
         getSiteBackendCapabilities: function()
@@ -56,9 +66,9 @@
             }
         },
 
-        _requestFileQosPossibilities: function(apiEndPoint)
+        _requestQosPossibilities: function(apiEndPoint)
         {
-            const url = apiEndPoint + "qos-management/qos/file";
+            const url = apiEndPoint + "qos-management/qos/"+this.fileType;
             const xhr = new XMLHttpRequest();
             xhr.open('GET', url);
             xhr.onload = ()=> {
@@ -67,7 +77,7 @@
                     const x = JSON.parse(xhr.responseText);
                     const response = x.name;
                     for (let i = 0; i < response.length ; i++) {
-                        this.urls.push(apiEndPoint + "qos-management/qos/file/" + response[i]);
+                        this.urls.push(apiEndPoint + "qos-management/qos/"+this.fileType+"/" + response[i]);
                     }
                     this.getSiteBackendCapabilities();
                 } else {
