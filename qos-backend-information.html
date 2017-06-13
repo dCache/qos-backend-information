@@ -35,11 +35,23 @@
                 value: 'file',
                 notify: true
             },
+
+            headers: {
+                type: Object,
+                notify: true
+            }
         },
 
-        factoryImpl: function(apiEndPoint, auth)
+        factoryImpl: function(apiEndPoint, auth, headers)
         {
             this.auth = auth===undefined? 'Basic bm9ib2R5Om5vcGFzc3dvcmQ=':auth;
+            this.headers = headers===undefined? 
+                {
+                    "Content-type":"application/json", 
+                    "Accept": "application/json", 
+                    "Suppress-WWW-Authenticate": "Suppress", 
+                    "Authorization": this.auth
+                }: headers
             this._requestQosPossibilities(apiEndPoint);
         },
 
@@ -50,7 +62,7 @@
                     'Property \'urls\' cannot be unspecified.');
                 precondition.checkArgument(this.urls.length != 0,
                     'Cannot set property \'urls\' to empty array.');
-                let requestQosInfo = new MultipleAjaxRequests(this.urls, this.auth, this);
+                let requestQosInfo = new MultipleAjaxRequests(this.urls, this.auth, this, this.headers);
                 this.addEventListener('allResolved', e => {
                     /**
                      * @event {qos-backend-response}
@@ -85,9 +97,11 @@
                 new Error("Network Error");
             };
 
-            xhr.setRequestHeader("Content-type", "application/json");
-            xhr.setRequestHeader("Authorization", this.auth);
-            xhr.setRequestHeader("Accept", "application/json");
+            let header;
+            for (header in this.headers) {
+                xhr.setRequestHeader(header, this.headers[header]);
+            }
+
             xhr.send();
         },
     });

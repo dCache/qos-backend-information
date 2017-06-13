@@ -23,17 +23,16 @@
           <h1>HERE</h1>
           <button onclick="list()">List</button>
           <script>
-            let qos = document.createElement('qos-backend-information');
-            function list() {
-              qos.urls = ["http://localhost:3880/api/v1/qos-management/qos/file/disk+tape",
-                "http://localhost:3880/api/v1/qos-management/qos/directory/+tape"];
-              qos.getSiteBackendCapabilities();
+            let qos = new QosBackendInformation("https://localhost:3880/api/v1/", 'jyjydf==');
+            let resp;
 
-              setTimeout(() => {console.log(qos.response)},2000)
+            qos.addEventListener('qos-backend-response', (e)=>{
+               resp = e.detail.response;
+            })
+
+            function list() {
+              console.log(resp)
             }
-            console.log(qos.response);
-            
-            
           </script>
         </template>
       </demo-snippet>

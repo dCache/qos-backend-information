@@ -5,7 +5,7 @@
   "dependencies": {
     "polymer": "Polymer/polymer#^1.4.0",
     "util-precondition": "femiadeyemi/util-precondition#^0.0.3",
-    "util-majax-requests": "femiadeyemi/util-majax-requests#^0.0.4"
+    "util-majax-requests": "femiadeyemi/util-majax-requests#^0.0.6"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
