@@ -3,14 +3,14 @@
   "description": "Get QoS backend information for both file and directory.",
   "main": "qos-backend-information.html",
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.4.0",
-    "util-precondition": "femiadeyemi/util-precondition#^0.0.3",
-    "util-majax-requests": "femiadeyemi/util-majax-requests#^0.0.6"
+    "polymer": "Polymer/polymer#2.0.2",
+    "util-precondition": "dCacheElements/preconditionjs#1.0.0",
+    "util-majax-requests": "dCacheElements/multipleajaxrequestsjs#1.0.0"
   },
   "devDependencies": {
-    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
-    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
-    "web-component-tester": "^4.0.0",
-    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+    "iron-component-page": "PolymerElements/iron-component-page#3.0.1",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#2.0.0",
+    "web-component-tester": "6.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#1.0.5"
   }
 }

@@ -1,108 +1,124 @@
-<link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../promise-polyfill/promise-polyfill-lite.html">
-<link rel="import" href="../util-precondition/precondition-element.html">
-<link rel="import" href="../util-majax-requests/majax-requests-element.html">
+<link rel="import" href="../polymer/polymer-element.html">
+<script src="../util-precondition/precondition.js"></script>
+<script src="../util-majax-requests/majax-requests.js"></script>
 
-<!--
-`qos-backend-information`
-
-@demo demo/index.html
--->
-
+<dom-module id="qos-backend-information">
 <script>
     'use strict';
-    let QosBackendInformation = Polymer({
-        is: 'qos-backend-information',
-        hostAttributes: {
-            hidden: true
-        },
-        properties: {
-            urls: {
-                type: Array,
-                notify: true
-            },
-            auth: {
-                type: String,
-                notify: true
-            },
-
-            /**
-             * value: file or directory
-             * default to file
-             */
-            fileType: {
-                type: Array,
-                value: 'file',
-                notify: true
-            },
-
-            headers: {
-                type: Object,
-                notify: true
-            }
-        },
-
-        factoryImpl: function(apiEndPoint, auth, headers)
+    /**
+     * `qos-backend-information`
+     * 
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class QosBackendInformation extends Polymer.Element
+    {
+        static get is()
         {
-            this.auth = auth===undefined? 'Basic bm9ib2R5Om5vcGFzc3dvcmQ=':auth;
-            this.headers = headers===undefined? 
-                {
-                    "Content-type":"application/json", 
-                    "Accept": "application/json", 
-                    "Suppress-WWW-Authenticate": "Suppress", 
-                    "Authorization": this.auth
-                }: headers
-            this._requestQosPossibilities(apiEndPoint);
-        },
+            return 'qos-backend-information';
+        }
 
-        getSiteBackendCapabilities: function()
+        static get properties()
+        {
+            return {
+                auth: {
+                    type: String,
+                    value: 'Basic YW5vbnltb3VzOm5vcGFzc3dvcmQ='
+                },
+
+                /**
+                 * value: file or directory
+                 * default to file
+                 */
+                fileType: {
+                    type: Array,
+                    value: 'file'
+                },
+                response: {
+                    type: Array,
+                    notify: true
+                },
+                apiEndPoint: {
+                    type: String
+                }
+            }
+        }
+
+        ready()
+        {
+            this._ensureAttribute('hidden', true);
+        }
+
+        _getSiteBackendCapabilities(urls, headers)
+        {
+            precondition.checkArgument(urls !== undefined || urls !== null,
+                    'Property \'urls\' cannot be unspecified.');
+            precondition.checkArgument(urls.length !== 0,
+                    'Cannot set property \'urls\' to empty array.');
+            let requestQosInfo = new MultipleAjaxRequests(urls, this, headers);
+            this.addEventListener('allResolved', e => {
+                this.response = e.detail;
+                /**
+                 * @event {qos-backend-response}
+                 */
+                this.dispatchEvent(new CustomEvent('qos-backend-response', {
+                    bubbles: true,
+                    composed: true,
+                    detail: this.response
+                }));
+            });
+            requestQosInfo.send();
+        }
+
+        trigger()
         {
             try {
-                precondition.checkArgument(this.urls != undefined || this.urls != null,
-                    'Property \'urls\' cannot be unspecified.');
-                precondition.checkArgument(this.urls.length != 0,
-                    'Cannot set property \'urls\' to empty array.');
-                let requestQosInfo = new MultipleAjaxRequests(this.urls, this.auth, this, this.headers);
-                this.addEventListener('allResolved', e => {
-                    /**
-                     * @event {qos-backend-response}
-                     */
-                    this.fire('qos-backend-response', {response: e.detail});
-                });
-                requestQosInfo.send();
+                precondition.checkArgument(this.apiEndPoint !== undefined || this.apiEndPoint !== null,
+                    'Property \'apiEndPoint\' cannot be unspecified.');
+
+                let headers = this._computeHeaders(this.auth);
+                const url = this.apiEndPoint + "qos-management/qos/"+this.fileType;
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', url);
+                xhr.onload = ()=> {
+                    if (xhr.status >= 200 || xhr.status < 500) {
+                        let urls = [];
+                        const x = JSON.parse(xhr.responseText);
+                        const response = x.name;
+                        for (let i = 0; i < response.length ; i++) {
+                            urls.push(this.apiEndPoint + "qos-management/qos/"+this.fileType+"/" + response[i]);
+                        }
+                        this._getSiteBackendCapabilities(urls, headers);
+                    } else {
+                        new Error("Server Side Error");
+                    }
+                };
+                xhr.onerror = function() {
+                    new Error("Network Error");
+                };
+
+                for (let key in headers) {
+                    xhr.setRequestHeader(key, headers[key]);
+                }
+
+                xhr.send();
             } catch (e) {
                 throw new Error(e.message);
             }
-        },
+        }
 
-        _requestQosPossibilities: function(apiEndPoint)
+        _computeHeaders(auth)
         {
-            const url = apiEndPoint + "qos-management/qos/"+this.fileType;
-            const xhr = new XMLHttpRequest();
-            xhr.open('GET', url);
-            xhr.onload = ()=> {
-                if (xhr.status >= 200 || xhr.status < 500) {
-                    this.urls = [];
-                    const x = JSON.parse(xhr.responseText);
-                    const response = x.name;
-                    for (let i = 0; i < response.length ; i++) {
-                        this.urls.push(apiEndPoint + "qos-management/qos/"+this.fileType+"/" + response[i]);
-                    }
-                    this.getSiteBackendCapabilities();
-                } else {
-                    new Error("Server Side Error");
-                }
-            };
-            xhr.onerror = function() {
-                new Error("Network Error");
-            };
-
-            let header;
-            for (header in this.headers) {
-                xhr.setRequestHeader(header, this.headers[header]);
+            return {
+                "Content-type":"application/json", 
+                "Accept": "application/json", 
+                "Suppress-WWW-Authenticate": "Suppress", 
+                "Authorization": `${auth}`
             }
-
-            xhr.send();
-        },
-    });
+        }
+    }
+    customElements.define(QosBackendInformation.is, QosBackendInformation);
 </script>
+</dom-module>
