@@ -21,17 +21,17 @@
       <demo-snippet>
         <template>
           <h1>HERE</h1>
+          <qos-backend-information id='qos' api-end-point="http://localhost:3880/api/v1/" auth="vajhUNJ=="></qos-backend-information>
           <button onclick="list()">List</button>
           <script>
-            let qos = new QosBackendInformation("https://localhost:3880/api/v1/", 'jyjydf==');
-            let resp;
+            let qos = document.querySelector('#qos');
 
             qos.addEventListener('qos-backend-response', (e)=>{
-               resp = e.detail.response;
+               console.log(e.detail);
             })
 
             function list() {
-              console.log(resp)
+              qos.trigger();
             }
           </script>
         </template>
