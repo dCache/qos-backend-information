@@ -22,7 +22,7 @@
       suite('qos-backend-information', function() {
         test('instantiating the element works', function() {
           var element = fixture('basic');
-          assert.equal(element.is, 'qos-backend-information');
+          assert.equal((element.tagName).toLowerCase(), 'qos-backend-information');
         });
       });
     </script>
