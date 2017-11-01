@@ -3,7 +3,7 @@
   "description": "Get QoS backend information for both file and directory.",
   "main": "qos-backend-information.html",
   "dependencies": {
-    "polymer": "Polymer/polymer#2.0.2",
+    "polymer": "Polymer/polymer#^2.0.0",
     "util-precondition": "dCacheElements/preconditionjs#1.0.0",
     "util-majax-requests": "dCacheElements/multipleajaxrequestsjs#1.0.0"
   },
