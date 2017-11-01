@@ -1,6 +1,5 @@
 <link rel="import" href="../polymer/polymer-element.html">
-<script src="../util-precondition/precondition.js"></script>
-<script src="../util-majax-requests/majax-requests.js"></script>
+<link rel="import" href="./import-scripts.html">
 
 <script>
     'use strict';
@@ -47,6 +46,7 @@
 
         ready()
         {
+            super.ready();
             this._ensureAttribute('hidden', true);
         }
 
@@ -118,5 +118,5 @@
             }
         }
     }
-    customElements.define(QosBackendInformation.is, QosBackendInformation);
+    window.customElements.define(QosBackendInformation.is, QosBackendInformation);
 </script>
