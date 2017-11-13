@@ -6,7 +6,7 @@
     'use strict';
     /**
      * `qos-backend-information`
-     * 
+     *
      *
      * @customElement
      * @polymer
@@ -59,14 +59,14 @@
                     'Cannot set property \'urls\' to empty array.');
             let requestQosInfo = new MultipleAjaxRequests(urls, this, headers);
             this.addEventListener('allResolved', e => {
-                this.response = e.detail;
+                this.response = e.detail.response;
                 /**
                  * @event {qos-backend-response}
                  */
                 this.dispatchEvent(new CustomEvent('qos-backend-response', {
                     bubbles: true,
                     composed: true,
-                    detail: this.response
+                    detail: {response: this.response}
                 }));
             });
             requestQosInfo.send();
@@ -112,9 +112,9 @@
         _computeHeaders(auth)
         {
             return {
-                "Content-type":"application/json", 
-                "Accept": "application/json", 
-                "Suppress-WWW-Authenticate": "Suppress", 
+                "Content-type":"application/json",
+                "Accept": "application/json",
+                "Suppress-WWW-Authenticate": "Suppress",
                 "Authorization": `${auth}`
             }
         }
