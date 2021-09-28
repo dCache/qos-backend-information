@@ -4,8 +4,8 @@
   "main": "qos-backend-information.html",
   "dependencies": {
     "polymer": "Polymer/polymer#2.0.2",
-    "util-precondition": "dCache/preconditionjs#1.0.0",
-    "util-majax-requests": "dCache/multipleajaxrequestsjs#1.0.0"
+    "util-precondition": "dCache/preconditionjs#0.0.4",
+    "util-majax-requests": "dCache/multipleajaxrequestsjs#0.0.7"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#3.0.1",
