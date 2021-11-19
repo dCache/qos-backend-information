@@ -1,13 +1,12 @@
 <link rel="import" href="../polymer/polymer-element.html">
-<script src="../util-precondition/precondition.js"></script>
-<script src="../util-majax-requests/majax-requests.js"></script>
+<link rel="import" href="./../util-precondition/preconditionjs-import.html">
+<link rel="import" href="./../util-majax-requests/majax-requests.html">
 
-<dom-module id="qos-backend-information">
 <script>
     'use strict';
     /**
      * `qos-backend-information`
-     * 
+     *
      *
      * @customElement
      * @polymer
@@ -48,6 +47,7 @@
 
         ready()
         {
+            super.ready();
             this._ensureAttribute('hidden', true);
         }
 
@@ -59,14 +59,14 @@
                     'Cannot set property \'urls\' to empty array.');
             let requestQosInfo = new MultipleAjaxRequests(urls, this, headers);
             this.addEventListener('allResolved', e => {
-                this.response = e.detail;
+                this.response = e.detail.response;
                 /**
                  * @event {qos-backend-response}
                  */
                 this.dispatchEvent(new CustomEvent('qos-backend-response', {
                     bubbles: true,
                     composed: true,
-                    detail: this.response
+                    detail: {response: this.response}
                 }));
             });
             requestQosInfo.send();
@@ -112,13 +112,12 @@
         _computeHeaders(auth)
         {
             return {
-                "Content-type":"application/json", 
-                "Accept": "application/json", 
-                "Suppress-WWW-Authenticate": "Suppress", 
+                "Content-type":"application/json",
+                "Accept": "application/json",
+                "Suppress-WWW-Authenticate": "Suppress",
                 "Authorization": `${auth}`
             }
         }
     }
-    customElements.define(QosBackendInformation.is, QosBackendInformation);
+    window.customElements.define(QosBackendInformation.is, QosBackendInformation);
 </script>
-</dom-module>
